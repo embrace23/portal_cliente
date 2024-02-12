@@ -1,5 +1,7 @@
+User
 <?php
 require('config.php');
+
 $tipo = $_FILES['archivo']['type'];
 $tamanio = $_FILES['archivo']['size'];
 $archivotmp = $_FILES['archivo']['tmp_name'];
@@ -13,55 +15,83 @@ foreach ($lineas as $linea) {
 
     if ($i != 0) {
 
-        $datos = explode(",", $linea);
-       
-        $nombre = !empty($datos[0])  ? ($datos[0]) : '';
-		$apellido = !empty($datos[1])  ? ($datos[1]) : '';
-        $fecha_nacimiento = !empty($datos[2])  ? ($datos[2]) : '';
-        $plan = !empty($datos[3]) ? ($datos[3]) : '';
+        $datos = explode(";", $linea);
+
+        $first_name = !empty($datos[0]) ? trim($datos[0]) : '';
+        $last_name = !empty($datos[1]) ? trim($datos[1]) : '';
+        $date_of_birth = !empty($datos[2]) ? trim($datos[2]) : '';
+        $age = !empty($datos[3]) ? trim($datos[3]) : '';
+        $document_number = !empty($datos[4]) ? trim($datos[4]) : '';
+        $destination = !empty($datos[5]) ? trim($datos[5]) : '';
+        $plan = !empty($datos[6]) ? trim($datos[6]) : '';
+        $agreement = !empty($datos[7]) ? trim($datos[7]) : '';
+        $issuance_country = !empty($datos[8]) ? trim($datos[8]) : '';
+        $issuing_date = !empty($datos[9]) ? trim($datos[9]) : '';
+        $effective_date = !empty($datos[10]) ? trim($datos[10]) : '';
+        $term_date = !empty($datos[11]) ? trim($datos[11]) : '';
 
         $cant_duplicidad = 0;
 
-       
-        if( !empty($apellido) ){
-            $checkemail_duplicidad = ("SELECT apellido FROM pax WHERE apellido='".($apellido)."' ");
+        if (!empty($last_name)) {
+            $checkemail_duplicidad = "SELECT document_number FROM pax WHERE document_number='" . $document_number . "'";
             $ca_dupli = mysqli_query($con, $checkemail_duplicidad);
             $cant_duplicidad = mysqli_num_rows($ca_dupli);
-        }   
+        }
 
-        //No existe Registros Duplicados
-        if ( $cant_duplicidad == 0 ) { 
+        // No existe Registros Duplicados
+        if ($cant_duplicidad == 0) {
 
-            $insertarData = "INSERT INTO pax( 
-            nombre,
-                apellido,
-                fecha_nacimiento,
-                plan
+            $insertarData = "INSERT INTO pax(
+                first_name,
+                last_name,
+                date_of_birth,
+                age,
+                document_number,
+                destination,
+                plan,
+                agreement,
+                issuance_country,
+                issuing_date,
+                effective_date,
+                term_date
             ) VALUES(
-                '$nombre',
-                '$apellido',
-                '$fecha_nacimiento',
-                '$plan'
+                '$first_name',
+                '$last_name',
+                '$date_of_birth',
+                '$age',
+                '$document_number',
+                '$destination',
+                '$plan',
+                '$agreement',
+                '$issuance_country',
+                '$issuing_date',
+                '$effective_date',
+                '$term_date'
             )";
             mysqli_query($con, $insertarData);
-                    
         } 
-        /**Caso Contrario actualizo el o los Registros ya existentes*/
-        else{
-            $updateData =  ("UPDATE pax SET 
-                nombre='" .$nombre. "',
-                apellido='" .$apellido. "',
-                fecha_nacimiento='" .$fecha_nacimiento. "',
-                plan='" .$plan. "'
-                WHERE apellido='".$apellido."'
-            ");
+        // Caso Contrario actualizo el o los Registros ya existentes
+        else {
+            $updateData =  "UPDATE pax SET 
+                first_name='" . $first_name . "',
+                last_name='" . $last_name . "',
+                date_of_birth='" . $date_of_birth . "',
+                age='" . $age . "',
+                destination='" . $destination . "',
+                plan='" . $plan . "',
+                agreement='" . $agreement . "',
+                issuance_country='" . $issuance_country . "',
+                issuing_date='" . $issuing_date . "',
+                effective_date='" . $effective_date . "',
+                term_date='" . $term_date . "'
+                WHERE document_number='" . $document_number . "'";
             $result_update = mysqli_query($con, $updateData);
-        } 
+        }
     }
 
-$i++;
+    $i++;
 }
 
 ?>
 
-<a href="index.php">Atras</a>
+<a href="index.php">Atrás</a>
