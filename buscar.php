@@ -7,7 +7,7 @@ $username = "root";
 $password = "";
 $dbname = "gfa";
 
-// Crea la conexión
+// Crea la conexión 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verifica la conexión
