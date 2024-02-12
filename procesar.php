@@ -1,45 +1,67 @@
 <?php
-// Configuración de la conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gfa";
+require('config.php');
+$tipo = $_FILES['archivo']['type'];
+$tamanio = $_FILES['archivo']['size'];
+$archivotmp = $_FILES['archivo']['tmp_name'];
+$lineas = file($archivotmp);
 
-// Conexión a la base de datos
-$conn = new mysqli($servername, $username, $password, $dbname);
+$i = 0;
 
-// Verificación de la conexión
-if ($conn->connect_error) {
-    die("Conexión fallida: " . $conn->connect_error);
-}
+foreach ($lineas as $linea) {
+    $cantidad_registros = count($lineas);
+    $cantidad_regist_agregados =  ($cantidad_registros - 1);
 
-// Procesar el archivo Excel
-if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] == UPLOAD_ERR_OK) {
-    $nombre_temporal = $_FILES['archivo']['tmp_name'];
+    if ($i != 0) {
 
-    // Cargar la librería PhpSpreadsheet
-    require 'vendor/autoload.php'; // Ajusta la ruta según la estructura de tu proyecto
+        $datos = explode(",", $linea);
+       
+        $nombre = !empty($datos[0])  ? ($datos[0]) : '';
+		$apellido = !empty($datos[1])  ? ($datos[1]) : '';
+        $fecha_nacimiento = !empty($datos[2])  ? ($datos[2]) : '';
+        $plan = !empty($datos[3]) ? ($datos[3]) : '';
 
-    $objPHPExcel = PhpOffice\PhpSpreadsheet\IOFactory::load($nombre_temporal);
-    $hoja = $objPHPExcel->getSheet(0);
+        $cant_duplicidad = 0;
 
-    // Iterar sobre las filas del archivo Excel
-    foreach ($hoja->getRowIterator() as $fila) {
-        $nombre = $fila->getCellByColumnAndRow(0)->getValue();
-        $apellido = $fila->getCellByColumnAndRow(1)->getValue();
-        $fecha_nacimiento = $fila->getCellByColumnAndRow(2)->getValue();
-        $plan = $fila->getCellByColumnAndRow(3)->getValue();
+       
+        if( !empty($apellido) ){
+            $checkemail_duplicidad = ("SELECT apellido FROM pax WHERE apellido='".($apellido)."' ");
+            $ca_dupli = mysqli_query($con, $checkemail_duplicidad);
+            $cant_duplicidad = mysqli_num_rows($ca_dupli);
+        }   
 
-        // Insertar los datos en la base de datos
-        $sql = "INSERT INTO tu_tabla (nombre, apellido, fecha_nacimiento, plan) VALUES ('$nombre', '$apellido', '$fecha_nacimiento', '$plan')";
-        $conn->query($sql);
+        //No existe Registros Duplicados
+        if ( $cant_duplicidad == 0 ) { 
+
+            $insertarData = "INSERT INTO pax( 
+            nombre,
+                apellido,
+                fecha_nacimiento,
+                plan
+            ) VALUES(
+                '$nombre',
+                '$apellido',
+                '$fecha_nacimiento',
+                '$plan'
+            )";
+            mysqli_query($con, $insertarData);
+                    
+        } 
+        /**Caso Contrario actualizo el o los Registros ya existentes*/
+        else{
+            $updateData =  ("UPDATE pax SET 
+                nombre='" .$nombre. "',
+                apellido='" .$apellido. "',
+                fecha_nacimiento='" .$fecha_nacimiento. "',
+                plan='" .$plan. "'
+                WHERE apellido='".$apellido."'
+            ");
+            $result_update = mysqli_query($con, $updateData);
+        } 
     }
 
-    echo "Datos cargados exitosamente.";
-} else {
-    echo "Error al cargar el archivo.";
+$i++;
 }
 
-// Cerrar la conexión
-$conn->close();
 ?>
+
+<a href="index.php">Atras</a>
