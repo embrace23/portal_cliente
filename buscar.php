@@ -17,12 +17,12 @@ if ($conn->connect_error) {
 }
 
 // Inicializar variables de búsqueda
-$nombre = '%' . $_GET['nombre'] . '%';
-$apellido = '%' . $_GET['apellido'] . '%';
-$plan = '%' . $_GET['plan'] . '%';
+$nombre = $_GET['nombre'];
+$apellido = $_GET['apellido'];
+$plan = $_GET['plan'];
 
 // Consulta SQL para obtener los valores filtrados de la tabla pax
-$sql = "SELECT first_name, last_name, plan FROM pax WHERE first_name LIKE ? AND last_name LIKE ? AND plan LIKE ?";
+$sql = "SELECT first_name, last_name, plan FROM pax WHERE first_name = ? AND last_name = ? AND plan = ?";
 
 // Preparar la consulta
 $stmt = $conn->prepare($sql);
@@ -52,7 +52,7 @@ if ($result->num_rows > 0) {
     }
 
     // Enviar el PDF al navegador
-    $pdf->Output('D', 'resultado.pdf'); // Descargar el PDF con el nombre "resultado.pdf"
+    $pdf->Output('D', 'Voucher - ' . $nombre . ' ' . $apellido . '.pdf');
 } else {
     echo "No se encontraron resultados";
 }

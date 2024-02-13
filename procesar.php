@@ -41,6 +41,7 @@ foreach ($lineas as $linea) {
         // No existe Registros Duplicados
         if ($cant_duplicidad == 0) {
 
+            
             $insertarData = "INSERT INTO pax(
                 first_name,
                 last_name,
@@ -69,6 +70,36 @@ foreach ($lineas as $linea) {
                 '$term_date'
             )";
             mysqli_query($con, $insertarData);
+            
+            $tabla_destino = ($agreement == 'Protege Tu Viaje (PTV)') ? 'cliente1' : 'cliente2';
+            $insertarTablaIndividual = "INSERT INTO $tabla_destino(
+                first_name,
+                last_name,
+                date_of_birth,
+                age,
+                document_number,
+                destination,
+                plan,
+                agreement,
+                issuance_country,
+                issuing_date,
+                effective_date,
+                term_date
+            ) VALUES(
+                '$first_name',
+                '$last_name',
+                '$date_of_birth',
+                '$age',
+                '$document_number',
+                '$destination',
+                '$plan',
+                '$agreement',
+                '$issuance_country',
+                '$issuing_date',
+                '$effective_date',
+                '$term_date'
+            )";
+            mysqli_query($con, $insertarTablaIndividual);
         } 
         // Caso Contrario actualizo el o los Registros ya existentes
         else {
@@ -86,6 +117,22 @@ foreach ($lineas as $linea) {
                 term_date='" . $term_date . "'
                 WHERE document_number='" . $document_number . "'";
             $result_update = mysqli_query($con, $updateData);
+
+            $tabla_destino = ($agreement == 'Protege Tu Viaje (PTV)') ? 'cliente1' : 'cliente2';
+            $updateTablaIndividual =  "UPDATE $tabla_destino SET 
+            first_name='" . $first_name . "',
+            last_name='" . $last_name . "',
+            date_of_birth='" . $date_of_birth . "',
+            age='" . $age . "',
+            destination='" . $destination . "',
+            plan='" . $plan . "',
+            agreement='" . $agreement . "',
+            issuance_country='" . $issuance_country . "',
+            issuing_date='" . $issuing_date . "',
+            effective_date='" . $effective_date . "',
+            term_date='" . $term_date . "'
+            WHERE document_number='" . $document_number . "'";
+            $result_updateTablaIndividual = mysqli_query($con, $updateTablaIndividual);
         }
     }
 
