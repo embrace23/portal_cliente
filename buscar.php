@@ -59,7 +59,7 @@ if ($result->num_rows > 0) {
 	//Texto resaltado
 	$fpdf->SetFont('Arial', 'B', 10);
 	$fpdf->setXY(9,52);
-	$fpdf->MultiCell(0,5,utf8_decode("Atenção: O seguro viagem não é seguro saúde! Leia atentamente as condições contratuais, observando seus direitos e obrigações, bem como o limite do capital segurado contratado para cada cobertura."));
+	$fpdf->MultiCell(0,5,utf8_decode("Atenção: O seguro viagem não é seguro saúde! Leia atentamente as condições contratuais, observando seus direitos e obrigações, " . $nombre . ' bem como o limite do capital segurado contratado para cada cobertura.'));
 
     // Establecer la fuente antes de usar Cell
     $fpdf->SetFont('Arial', '', 12);
