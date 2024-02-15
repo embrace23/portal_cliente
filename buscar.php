@@ -2,10 +2,10 @@
 require('fpdf/fpdf.php');
 
 // Configuración de la conexión a la base de datos
-$servername = "db5015283001.hosting-data.io";
-$username = "dbu4149991";
-$password = "Embrace2024!";
-$database = "dbs12584072";
+$servername = "localhost";
+$username = "root";
+$password = "";
+$database = "portal";
 
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $database);
@@ -52,7 +52,7 @@ if ($result->num_rows > 0) {
     }
 
     // Enviar el PDF al navegador
-    $fpdf->Output('D', 'Voucher - ' . $nombre . ' ' . $apellido . '.pdf');
+    $fpdf->Output('D', 'Voucher - ' . $nombre . ' ' . $apellido . '.pdf', true);
 } else {
     echo "No se encontraron resultados";
 }
