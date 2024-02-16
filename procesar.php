@@ -153,6 +153,7 @@ foreach ($lineas as $linea) {
     <title>Carga de datos</title>
 </head>
 <body>
-<a href="clientes.html">Se cargó correctamente el CSV.</a>
+    <p>Se cargó correctamente el archivo</p>
+    <a href="clientes.html">Atrás</a>
 </body>
 </html>
